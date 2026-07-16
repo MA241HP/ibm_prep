@@ -53,3 +53,53 @@ if __name__ == "__main__":
     test_nums = [1, 1, 1, 2, 2, 3]
     k = 2
     print(f"LC347 Result: {topKFrequent(test_nums, k)}")  # Expected Output: [1, 2]
+
+#############################################################################################################
+# =====================================================================
+# QUESTION ID: LC 344
+# TOPIC: Two Pointers - Reverse String (Optimal In-Place Mutation)
+# LINK: https://leetcode.com/problems/reverse-string/
+# =====================================================================
+def reverseStringPointer(s: list[str]) -> None:
+    """
+    Do not return anything, modify s in-place instead.
+    
+    Space Complexity: O(1) - Optimal constant space allocation.
+    Time Complexity:  O(N) - Single pass with N/2 swaps.
+    """
+    left, right = 0, len(s) - 1
+    
+    while left < right:
+        # Swap characters in-place using two pointers
+        s[left], s[right] = s[right], s[left]
+        left += 1
+        right -= 1
+
+# --- Driver Code for Test ---
+my_list_1 = ["h", "e", "l", "l", "o"]
+print("Original (Pointer):", my_list_1)
+reverseStringPointer(my_list_1)
+print("Reversed (Pointer):", my_list_1)
+
+
+# =====================================================================
+# QUESTION ID: LC 344
+# TOPIC: Slicing & Slice Assignment - Reverse String (Pythonic Mutation)
+# LINK: https://leetcode.com/problems/reverse-string/
+# =====================================================================
+def reverseStringSlice(s: list[str]) -> None:
+    """
+    Do not return anything, modify s in-place instead.
+    
+    Space Complexity: O(N) - Generates a temporary shallow copy of the list.
+    Time Complexity:  O(N) - Highly optimized C-level loop execution in Python.
+    """
+    # s[:] ensures we overwrite the existing list container in-place, 
+    # while s[::-1] generates the reversed copy to fill it.
+    s[:] = s[::-1]
+
+# --- Driver Code for Test ---
+my_list_2 = ["H", "a", "n", "n", "a", "h"]
+print("\nOriginal (Slice):  ", my_list_2)
+reverseStringSlice(my_list_2)
+print("Reversed (Slice):  ", my_list_2)
