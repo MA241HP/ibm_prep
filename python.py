@@ -98,6 +98,30 @@ def reverseStringSlice(s: list[str]) -> None:
     # while s[::-1] generates the reversed copy to fill it.
     s[:] = s[::-1]
 
+# =====================================================================
+# QUESTION ID: LC 151
+# TOPIC: String / Two Pointers - Reverse Words in a String
+# LINK: https://leetcode.com/problems/reverse-words-in-a-string/
+# =====================================================================
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        """
+        Time Complexity:  O(N) - Single pass through the string to split, reverse, and join.
+        Space Complexity: O(N) - To store the extracted words in memory.
+        """
+        return " ".join(s.split()[::-1])
+
+
+# --- Driver Code ---
+sol = Solution()
+example1 = "the sky is blue"
+example2 = "  hello world  "
+example3 = "a good   example"
+
+print("Result 1:", f'"{sol.reverseWords(example1)}"')  # Output: "blue is sky the"
+print("Result 2:", f'"{sol.reverseWords(example2)}"')  # Output: "world hello"
+print("Result 3:", f'"{sol.reverseWords(example3)}"')  # Output: "example good a"
+
 # --- Driver Code for Test ---
 my_list_2 = ["H", "a", "n", "n", "a", "h"]
 print("\nOriginal (Slice):  ", my_list_2)
