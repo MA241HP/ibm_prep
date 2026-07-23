@@ -98,7 +98,7 @@ def reverseStringSlice(s: list[str]) -> None:
     # while s[::-1] generates the reversed copy to fill it.
     s[:] = s[::-1]
 
-# =====================================================================
+# ===========================================STRING===========================================================================
 # QUESTION ID: LC 151
 # TOPIC: String / Two Pointers - Reverse Words in a String
 # LINK: https://leetcode.com/problems/reverse-words-in-a-string/
@@ -127,3 +127,29 @@ my_list_2 = ["H", "a", "n", "n", "a", "h"]
 print("\nOriginal (Slice):  ", my_list_2)
 reverseStringSlice(my_list_2)
 print("Reversed (Slice):  ", my_list_2)
+
+# =====================================================================
+# QUESTION ID: LC 387
+# TOPIC: Hash Map / Frequency Array - First Unique Character in a String
+# LINK: https://leetcode.com/problems/first-unique-character-in-a-string/
+# =====================================================================
+class Solution:
+    def firstUniqChar(self, s: str) -> int:
+        counts = {}
+        for char in s:
+            if char in counts:
+                counts[char] += 1
+            else:
+                counts[char] = 1
+
+        for ind, val in enumerate(s):
+            if counts[val] == 1:
+                return ind
+
+        return -1
+
+
+# --- Driver Code ---
+obj = Solution()
+s = "leetcode"
+print(obj.firstUniqChar(s))  # Output: 0
