@@ -91,3 +91,93 @@ ROUND(CAST(SUM( CASE WHEN status <>'completed' THEN 1 ELSE 0  END) AS FLOAT)/ co
 FROM cte
 GROUP BY request_at  
 
+--------------------------------------------------------------------------------
+-- Question 1: Find the Origin and Final Destination for each Customer (cid)
+-- Description: Traces multi-leg journeys or 2-leg connections to find 
+--              the absolute starting origin and ending destination per cid.
+--------------------------------------------------------------------------------
+
+-- 1. Setup Sample Schema & Data
+CREATE TABLE flights (
+    cid INT,
+    fid VARCHAR(10),
+    origin VARCHAR(50),
+    Destination VARCHAR(50)
+);
+
+INSERT INTO flights VALUES (1, 'f1', 'Del', 'Hyd');
+INSERT INTO flights VALUES (1, 'f2', 'Hyd', 'Blr');
+INSERT INTO flights VALUES (2, 'f3', 'Mum', 'Agra');
+INSERT INTO flights VALUES (2, 'f4', 'Agra', 'Kol');
+
+-- 2. Query Solution (Robust Set-Based / Anti-Join Approach for any number of legs)
+WITH start_points AS (
+    SELECT cid, origin 
+    FROM flights
+    EXCEPT
+    SELECT cid, Destination AS origin 
+    FROM flights
+),
+end_points AS (
+    SELECT cid, Destination 
+    FROM flights
+    EXCEPT
+    SELECT cid, origin AS Destination 
+    FROM flights
+)
+SELECT 
+    s.cid, 
+    s.origin, 
+    e.Destination
+FROM start_points s
+JOIN end_points e ON s.cid = e.cid;
+-- approach 2 ,
+--If the interview data is guaranteed to only have 2 legs per customer (as shown in the sample input), 
+--a simple INNER JOIN where the first flight's destination matches the second flight's origin works:
+SELECT 
+    f1.cid, 
+    f1.origin, 
+    f2.Destination
+FROM survey_log f1
+JOIN survey_log f2 
+  ON f1.cid = f2.cid 
+  AND f1.Destination = f2.origin;
+
+--------------------------------------------------------------------------------
+-- Question 2: Find the Count of New Customers Added in Each Month
+-- Description: Cohort analysis query that identifies the earliest month a 
+--              customer transacted to count unique new acquisitions per month.
+--------------------------------------------------------------------------------
+
+-- 1. Setup Sample Schema & Data
+CREATE TABLE customer_sales (
+    Month VARCHAR(20),
+    Customer VARCHAR(10),
+    QTY INT
+);
+
+INSERT INTO customer_sales VALUES ('Jan-21', 'C1', 20);
+INSERT INTO customer_sales VALUES ('Jan-21', 'C2', 30);
+INSERT INTO customer_sales VALUES ('Feb-21', 'C1', 10);
+INSERT INTO customer_sales VALUES ('Feb-21', 'C3', 15);
+INSERT INTO customer_sales VALUES ('Mar-21', 'C5', 19);
+INSERT INTO customer_sales VALUES ('Mar-21', 'C4', 10);
+INSERT INTO customer_sales VALUES ('Apr-21', 'C3', 13);
+INSERT INTO customer_sales VALUES ('Apr-21', 'C5', 15);
+INSERT INTO customer_sales VALUES ('Apr-21', 'C6', 10);
+
+-- 2. Query Solution
+WITH first_seen AS (
+    SELECT 
+        Customer, 
+        MIN(Month) AS first_month
+    FROM customer_sales
+    GROUP BY Customer
+)
+SELECT 
+    first_month AS Month,
+    COUNT(Customer) AS New_Customer_count
+FROM first_seen
+GROUP BY first_month
+ORDER BY first_month;
+
