@@ -180,4 +180,33 @@ SELECT
 FROM first_seen
 GROUP BY first_month
 ORDER BY first_month;
+-- approach 2
+WITH ranked_sales AS (
+    SELECT 
+        Customer,
+        Month,
+        ROW_NUMBER() OVER (PARTITION BY Customer ORDER BY Month) AS rnk
+    FROM customer_sales
+)
+SELECT 
+    Month,
+    COUNT(Customer) AS New_Customer_count
+FROM ranked_sales
+WHERE rnk = 1
+GROUP BY Month
+ORDER BY Month;
+--approach 3
+WITH first_seen AS (
+    SELECT DISTINCT
+        Customer,
+        FIRST_VALUE(Month) OVER (PARTITION BY Customer ORDER BY Month) AS first_month
+    FROM customer_sales
+)
+SELECT 
+    first_month AS Month,
+    COUNT(Customer) AS New_Customer_count
+FROM first_seen
+GROUP BY first_month
+ORDER BY first_month;
+
 
